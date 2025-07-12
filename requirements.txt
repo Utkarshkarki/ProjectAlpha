@@ -1,1 +1,7 @@
-flask
+logging
+setuptools
+typing
+os
+datetime
+
+#-e .
