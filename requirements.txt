@@ -1,8 +1,13 @@
-logging
-setuptools
-typing
-os
-datetime
-sys
+
+
+
+
+ipykernel
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+scipy
 
 #-e .
