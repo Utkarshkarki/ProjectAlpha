@@ -88,17 +88,17 @@ This is my log file <br>
 [ 2025-07-15 00:17:49,964 ] 38 src.logger - INFO - Train test split initiated<br>
 [ 2025-07-15 00:17:50,054 ] 45 src.logger - INFO - Ingestion of the data iss completed<br>
 [ 2025-07-15 00:17:50,101 ] 61 src.logger - INFO - Read train and test data completed<br>
-[ 2025-07-15 00:17:50,101 ] 62 src.logger - INFO - Train data shape: (26048, 15)
-[ 2025-07-15 00:17:50,101 ] 63 src.logger - INFO - Test data shape: (6513, 15)
-[ 2025-07-15 00:17:50,101 ] 65 src.logger - INFO - Converting '?' to NaN for proper missing value handling
-[ 2025-07-15 00:17:50,165 ] 74 src.logger - INFO - Obtaining preprocessing object
-[ 2025-07-15 00:17:50,166 ] 42 src.logger - INFO - Categorical columns: ['workclass', 'education', 'marital.status', 'occupation', 'relationship', 'race', 'sex', 'native.country']
-[ 2025-07-15 00:17:50,166 ] 43 src.logger - INFO - Numerical columns: ['age', 'fnlwgt', 'education.num', 'capital.gain', 'capital.loss', 'hours.per.week']
-[ 2025-07-15 00:17:50,169 ] 86 src.logger - INFO - Applying preprocessing object on training and testing dataframes
-[ 2025-07-15 00:17:50,265 ] 90 src.logger - INFO - Transformed train features shape: (26048, 108)
-[ 2025-07-15 00:17:50,265 ] 91 src.logger - INFO - Transformed test features shape: (6513, 108)
-[ 2025-07-15 00:17:50,269 ] 133 src.logger - ERROR - Error occurred during data transformation: tuple index out of range
+[ 2025-07-15 00:17:50,101 ] 62 src.logger - INFO - Train data shape: (26048, 15)<br>
+[ 2025-07-15 00:17:50,101 ] 63 src.logger - INFO - Test data shape: (6513, 15)<br>
+[ 2025-07-15 00:17:50,101 ] 65 src.logger - INFO - Converting '?' to NaN for proper missing value handling<br>
+[ 2025-07-15 00:17:50,165 ] 74 src.logger - INFO - Obtaining preprocessing object<br>
+[ 2025-07-15 00:17:50,166 ] 42 src.logger - INFO - Categorical columns: ['workclass', 'education', 'marital.status', 'occupation', 'relationship', 'race', 'sex', 'native.country']<br>
+[ 2025-07-15 00:17:50,166 ] 43 src.logger - INFO - Numerical columns: ['age', 'fnlwgt', 'education.num', 'capital.gain', 'capital.loss', 'hours.per.week']<br>
+[ 2025-07-15 00:17:50,169 ] 86 src.logger - INFO - Applying preprocessing object on training and testing dataframes<br>
+[ 2025-07-15 00:17:50,265 ] 90 src.logger - INFO - Transformed train features shape: (26048, 108)<br>
+[ 2025-07-15 00:17:50,265 ] 91 src.logger - INFO - Transformed test features shape: (6513, 108)<br>
+[ 2025-07-15 00:17:50,269 ] 133 src.logger - ERROR - Error occurred during data transformation: tuple index out of range<br>
   
--------------------------------some context---------------------------------
-After running my data_ingestion.py the above log file is getting created and then it is throwing eror .
-my data_ingestion.py file is calling my data_transformation.py file 
+-------------------------------some context---------------------------------<br>
+After running my data_ingestion.py the above log file is getting created and then it is throwing eror.<br>
+my data_ingestion.py file is calling my data_transformation.py file <br>
