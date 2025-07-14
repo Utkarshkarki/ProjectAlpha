@@ -56,6 +56,7 @@ class DataTransformation:
         try:
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
+            
 
             logger.info("Read train and test data completed")
             logger.info(f"Train data shape: {train_df.shape}")
@@ -90,19 +91,31 @@ class DataTransformation:
             logger.info(f"Transformed test features shape: {input_feature_test_arr.shape}")
 
             label_encoder = LabelEncoder()
-            target_feature_train_encoded = label_encoder.fit_transform(target_feature_train_df).reshape(-1, 1)
-            target_feature_test_encoded = label_encoder.transform(target_feature_test_df).reshape(-1, 1)
+            target_feature_train_encoded = label_encoder.fit_transform(target_feature_train_df)
+            target_feature_test_encoded = label_encoder.transform(target_feature_test_df)
 
-            logger.info(f"Reshaped target train shape: {target_feature_train_encoded.shape}")
-            logger.info(f"Reshaped target test shape: {target_feature_test_encoded.shape}")
+            # Convert to numpy arrays explicitly
+            target_feature_train_encoded = np.asarray(target_feature_train_encoded).reshape(-1, 1)
+            target_feature_test_encoded = np.asarray(target_feature_test_encoded).reshape(-1, 1)
+            input_feature_train_arr = np.asarray(input_feature_train_arr)
+            input_feature_test_arr = np.asarray(input_feature_test_arr)
 
-            if input_feature_train_arr.shape[0] != target_feature_train_encoded.shape[0]:
-                raise ValueError(
-                    f"Shape mismatch: Features {input_feature_train_arr.shape}, Target {target_feature_train_encoded.shape}"
-                )
+            # Final shape sanity check
+            assert input_feature_train_arr.shape[0] == target_feature_train_encoded.shape[0], \
+                f"Train row mismatch: {input_feature_train_arr.shape[0]} vs {target_feature_train_encoded.shape[0]}"
+            assert input_feature_test_arr.shape[0] == target_feature_test_encoded.shape[0], \
+                f"Test row mismatch: {input_feature_test_arr.shape[0]} vs {target_feature_test_encoded.shape[0]}"
 
-            train_arr = np.c_[input_feature_train_arr, target_feature_train_encoded]
-            test_arr = np.c_[input_feature_test_arr, target_feature_test_encoded]
+            logger.info("Sanity checks passed for feature and target shapes")
+
+            # Safe horizontal concatenation
+            try:
+                train_arr = np.concatenate([input_feature_train_arr, target_feature_train_encoded], axis=1)
+                test_arr = np.concatenate([input_feature_test_arr, target_feature_test_encoded], axis=1)
+            except Exception as concat_error:
+                logger.error(f"Concatenation failed. Types -> Train Features: {type(input_feature_train_arr)}, Train Target: {type(target_feature_train_encoded)}, Test Features: {type(input_feature_test_arr)}, Test Target: {type(target_feature_test_encoded)}")
+                logger.error(f"Concatenation failed. Shapes -> Train Features: {getattr(input_feature_train_arr, 'shape', 'none')}, Train Target: {getattr(target_feature_train_encoded, 'shape', 'none')}, Test Features: {getattr(input_feature_test_arr, 'shape', 'none')}, Test Target: {getattr(target_feature_test_encoded, 'shape', 'none')}")
+                raise CustomException(concat_error, sys)
 
             logger.info(f"Final train array shape: {train_arr.shape}")
             logger.info(f"Final test array shape: {test_arr.shape}")
@@ -112,6 +125,9 @@ class DataTransformation:
                 test_arr,
                 self.data_transformation_config.preprocessor_obj_file_path
             )
+
+
+
 
         except Exception as e:
             logger.error(f"Error occurred during data transformation: {str(e)}")
