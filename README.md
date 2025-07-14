@@ -102,3 +102,9 @@ This is my log file <br>
 -------------------------------some context---------------------------------<br>
 After running my data_ingestion.py the above log file is getting created and then it is throwing eror.<br>
 my data_ingestion.py file is calling my data_transformation.py file <br>
+
+
+
+
+# COMAND USED TO RUN CODE = "python -m src.components.filename"  <br>
+  for example :python -m src.components.data_ingetsion <br>
