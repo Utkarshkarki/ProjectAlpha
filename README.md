@@ -79,15 +79,15 @@ Yes, it's safe to delete — Python will just regenerate it next time the script
 __pycache__ is a built-in Python optimization folder that stores compiled versions of your .py files to make your scripts run faster.
 
 
---------------------------------The error------------------------------------------------
+--------------------------------The error------------------------------------------------<br>
 
-This is my log file 
+This is my log file <br>
 
-[ 2025-07-15 00:17:49,829 ] 29 src.logger - INFO - Entered the data ingestion method or component
-[ 2025-07-15 00:17:49,877 ] 32 src.logger - INFO - Read the dataset as dataframe
-[ 2025-07-15 00:17:49,964 ] 38 src.logger - INFO - Train test split initiated
-[ 2025-07-15 00:17:50,054 ] 45 src.logger - INFO - Ingestion of the data iss completed
-[ 2025-07-15 00:17:50,101 ] 61 src.logger - INFO - Read train and test data completed
+[ 2025-07-15 00:17:49,829 ] 29 src.logger - INFO - Entered the data ingestion method or component  <br>
+[ 2025-07-15 00:17:49,877 ] 32 src.logger - INFO - Read the dataset as dataframe<br>
+[ 2025-07-15 00:17:49,964 ] 38 src.logger - INFO - Train test split initiated<br>
+[ 2025-07-15 00:17:50,054 ] 45 src.logger - INFO - Ingestion of the data iss completed<br>
+[ 2025-07-15 00:17:50,101 ] 61 src.logger - INFO - Read train and test data completed<br>
 [ 2025-07-15 00:17:50,101 ] 62 src.logger - INFO - Train data shape: (26048, 15)
 [ 2025-07-15 00:17:50,101 ] 63 src.logger - INFO - Test data shape: (6513, 15)
 [ 2025-07-15 00:17:50,101 ] 65 src.logger - INFO - Converting '?' to NaN for proper missing value handling
