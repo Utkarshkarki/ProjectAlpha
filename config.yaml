@@ -1,0 +1,10 @@
+data_path: "Notebooks/Data/adult.csv"
+artifact_dir: "artifacts"
+train_test_split:
+  test_size: 0.2
+  random_state: 42
+model:
+  type: "logistic_regression"
+  max_iter: 200
+preprocessor_path: "artifacts/preprocessor.pkl"
+model_path: "artifacts/model.pkl"

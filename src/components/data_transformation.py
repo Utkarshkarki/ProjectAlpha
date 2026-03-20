@@ -7,6 +7,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+import joblib
 
 from src.exception import CustomException
 from src.logger import logger
@@ -97,18 +98,28 @@ class DataTransformation:
             # Convert to numpy arrays explicitly
             target_feature_train_encoded = np.asarray(target_feature_train_encoded).reshape(-1, 1)
             target_feature_test_encoded = np.asarray(target_feature_test_encoded).reshape(-1, 1)
-            input_feature_train_arr = np.asarray(input_feature_train_arr)
-            input_feature_test_arr = np.asarray(input_feature_test_arr)
+            # Convert transformed features to dense numpy arrays
+            if hasattr(input_feature_train_arr, "toarray"):
+                input_feature_train_arr = input_feature_train_arr.toarray()
+            else:
+                input_feature_train_arr = np.asarray(input_feature_train_arr)
+            if hasattr(input_feature_test_arr, "toarray"):
+                input_feature_test_arr = input_feature_test_arr.toarray()
+            else:
+                input_feature_test_arr = np.asarray(input_feature_test_arr)
 
             # Final shape sanity check
-            assert input_feature_train_arr.shape[0] == target_feature_train_encoded.shape[0], \
-                f"Train row mismatch: {input_feature_train_arr.shape[0]} vs {target_feature_train_encoded.shape[0]}"
-            assert input_feature_test_arr.shape[0] == target_feature_test_encoded.shape[0], \
-                f"Test row mismatch: {input_feature_test_arr.shape[0]} vs {target_feature_test_encoded.shape[0]}"
+            # Verify row counts match
+            if input_feature_train_arr.shape[0] != target_feature_train_encoded.shape[0]:
+                raise ValueError(f"Train row mismatch: {input_feature_train_arr.shape[0]} vs {target_feature_train_encoded.shape[0]}")
+            if input_feature_test_arr.shape[0] != target_feature_test_encoded.shape[0]:
+                raise ValueError(f"Test row mismatch: {input_feature_test_arr.shape[0]} vs {target_feature_test_encoded.shape[0]}")
 
-            logger.info("Sanity checks passed for feature and target shapes")
-
-            # Safe horizontal concatenation
+            # Convert sparse matrix to dense if needed
+            if hasattr(input_feature_train_arr, "toarray"):
+                input_feature_train_arr = input_feature_train_arr.toarray()
+            if hasattr(input_feature_test_arr, "toarray"):
+                input_feature_test_arr = input_feature_test_arr.toarray()
             try:
                 train_arr = np.concatenate([input_feature_train_arr, target_feature_train_encoded], axis=1)
                 test_arr = np.concatenate([input_feature_test_arr, target_feature_test_encoded], axis=1)
@@ -120,6 +131,9 @@ class DataTransformation:
             logger.info(f"Final train array shape: {train_arr.shape}")
             logger.info(f"Final test array shape: {test_arr.shape}")
 
+                        # Save the fitted preprocessor for later inference
+            os.makedirs(os.path.dirname(self.data_transformation_config.preprocessor_obj_file_path), exist_ok=True)
+            joblib.dump(preprocessing_obj, self.data_transformation_config.preprocessor_obj_file_path)
             return (
                 train_arr,
                 test_arr,

@@ -1,13 +1,11 @@
-
-
-
-
-ipykernel
-numpy
+fastapi
+uvicorn[standard]
+joblib
+pydantic
 pandas
+numpy
 scikit-learn
+ipykernel
 matplotlib
 seaborn
 scipy
-
-#-e .
