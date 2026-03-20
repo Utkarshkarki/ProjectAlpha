@@ -1,110 +1,206 @@
-# ProjectAlpha
+# 💰 ProjectAlpha — Income Prediction ML Pipeline
 
-| Column Name      | Description                                            | Type        |
-| ---------------- | ------------------------------------------------------ | ----------- |
-| `age`            | Age of the individual                                  | Numerical   |
-| `workclass`      | Type of employment (e.g., Private, Self-emp, etc.)     | Categorical |
-| `fnlwgt`         | Final weight (used by the census for population stats) | Numerical   |
-| `education`      | Education level (e.g., Bachelors, HS-grad)             | Categorical |
-| `education-num`  | Number representing education level                    | Numerical   |
-| `marital-status` | Marital status                                         | Categorical |
-| `occupation`     | Type of job (e.g., Tech-support, Sales, etc.)          | Categorical |
-| `relationship`   | Relationship (e.g., Wife, Not-in-family)               | Categorical |
-| `race`           | Race of the individual                                 | Categorical |
-| `sex`            | Gender                                                 | Categorical |
-| `capital-gain`   | Income from investment sources like stocks             | Numerical   |
-| `capital-loss`   | Loss from investment                                   | Numerical   |
-| `hours-per-week` | Hours worked per week                                  | Numerical   |
-| `native-country` | Country of origin                                      | Categorical |
-| `income`         | **Target** — whether income is `>50K` or `<=50K`       | Categorical |
+An end-to-end machine learning pipeline that predicts whether an individual's annual income exceeds **$50K** based on U.S. Census demographic data. The project provides a fully modular ML pipeline with a FastAPI-powered REST API for real-time predictions.
 
+---
 
+## 🎯 Goal
 
-📦 What is fnlwgt?
-The fnlwgt (final weight) stands for final sampling weight. It comes from how the U.S. Census Bureau samples and scales individuals to represent the entire U.S. population.
+The goal of this project is to build a production-ready ML pipeline that:
+- Ingests and preprocesses the **Adult Census Income** dataset
+- Trains a classification model to predict income level (`>50K` or `<=50K`)
+- Exposes predictions through a **REST API** for real-time inference
 
-It’s a numerical column used during survey design to indicate how representative each person is in the dataset.
+---
 
-🧮 What does it mean practically?
-If fnlwgt = 1000, it means this person represents 1000 similar people in the U.S. population.
+## 📊 Dataset
 
-So two people might have the same age, job, and income — but different fnlwgt values — because one is more statistically representative than the other based on how the sample was drawn.
+The project uses the [Adult Census Income dataset](https://archive.ics.uci.edu/ml/datasets/adult) (also known as the "adult" dataset).
 
-📊 Why Does the Census Use It?
-The U.S. Census uses stratified sampling: sampling certain groups more or less heavily based on demographics.
+| Column | Description | Type |
+|--------|-------------|------|
+| `age` | Age of the individual | Numerical |
+| `workclass` | Type of employment (Private, Self-emp, etc.) | Categorical |
+| `fnlwgt` | Final census sampling weight | Numerical |
+| `education` | Highest education level | Categorical |
+| `education.num` | Numeric representation of education | Numerical |
+| `marital.status` | Marital status | Categorical |
+| `occupation` | Type of job | Categorical |
+| `relationship` | Relationship status | Categorical |
+| `race` | Race | Categorical |
+| `sex` | Gender | Categorical |
+| `capital.gain` | Income from investments | Numerical |
+| `capital.loss` | Loss from investments | Numerical |
+| `hours.per.week` | Hours worked per week | Numerical |
+| `native.country` | Country of origin | Categorical |
+| `income` | **Target** — `>50K` or `<=50K` | Categorical |
 
-fnlwgt is used to rebalance the sample so it better reflects the true population proportions.
+---
 
-🧠 Should You Use fnlwgt in Your ML Model?
-✅ Use it only if:
-You're doing population-level statistics, e.g., “how many Americans make over $50K.”
+## 🏗️ Project Architecture
 
-You're building a weighted model that mimics the real-world population.
+```
+ProjectAlpha/
+├── Notebooks/
+│   └── Data/
+│       └── adult.csv               # Raw dataset
+├── src/
+│   ├── components/
+│   │   ├── data_ingestion.py       # Loads & splits data into train/test CSVs
+│   │   ├── data_transformation.py  # Preprocessing (scaling, encoding, imputation)
+│   │   └── model_trainer.py        # Trains & evaluates the model
+│   ├── pipeline/
+│   │   ├── train_pipeline.py       # Orchestrates full training flow
+│   │   ├── predict_pipeline.py     # Loads model & runs inference
+│   │   └── utils.py                # Helper functions (save/load pickle, CSV)
+│   ├── logger.py                   # Centralized logging
+│   └── exception.py                # Custom exception handler
+├── artifacts/                      # Generated: model.pkl, preprocessor.pkl, CSVs
+├── Templates/
+│   └── index.html                  # (Optional) Frontend HTML template
+├── application.py                  # FastAPI app (REST API)
+├── config.yaml                     # Paths & hyperparameter configuration
+├── requirements.txt                # Python dependencies
+└── setup.py                        # Package setup
+```
 
-🚫 Usually don't use it if:
-You're doing pure predictive modeling (e.g., to predict income for individuals).
+### Pipeline Flow
 
-You're training models like Random Forest, Logistic Regression, etc. where weights
-can introduce unnecessary noise.
--------------------------------------------------------------------------------------------------------------
+```
+adult.csv
+    │
+    ▼
+data_ingestion      →  artifacts/train.csv, test.csv
+    │
+    ▼
+data_transformation →  artifacts/preprocessor.pkl  (ColumnTransformer)
+    │
+    ▼
+model_trainer       →  artifacts/model.pkl  (LogisticRegression, AUC ~0.90)
+    │
+    ▼
+FastAPI /predict    →  {"prediction": ">50K"} or {"prediction": "<=50K"}
+```
 
+---
 
---------------------------------------------------------------------------------------------------------------
+## ⚙️ Model Performance
 
+| Metric | Score |
+|--------|-------|
+| Accuracy | ~84.8% |
+| ROC-AUC | ~90.3% |
 
- __pycache__ — is automatically generated by Python whenever you import or run Python files.
+---
 
-🔍 What is __pycache__?
-It stores compiled bytecode versions of your .py files — with a .pyc extension.
+## 🚀 Getting Started
 
-These are created to speed up execution the next time you run the code.
+### 1. Clone the repository
 
-Instead of re-parsing and re-interpreting the Python source, Python just loads the already-compiled bytecode.
+```bash
+git clone <your-repo-url>
+cd ProjectAlpha
+```
 
-🧠 Why does it get generated?
-When you import or run a Python module, Python compiles it to bytecode (a lower-level, optimized version of the code).
+### 2. Create and activate a virtual environment
 
-This bytecode is stored in __pycache__ so Python can execute it faster next time.
+```bash
+python -m venv income
+source income/Scripts/activate   # Git Bash on Windows
+# OR
+income\Scripts\activate           # PowerShell
+```
 
-For example, if you have a file data_ingestion.py, Python might generate:
+### 3. Install dependencies
 
-bash
-Copy
-Edit
-__pycache__/data_ingestion.cpython-311.pyc
-🧼 Can you delete __pycache__?
-Yes, it's safe to delete — Python will just regenerate it next time the script runs. But it's usually best to leave it as-is unless you're cleaning up for packaging or version control.
+```bash
+pip install -r requirements.txt
+```
 
-✅ TL;DR:
-__pycache__ is a built-in Python optimization folder that stores compiled versions of your .py files to make your scripts run faster.
+### 4. Run the training pipeline
 
+```bash
+python -m src.pipeline.train_pipeline
+```
 
---------------------------------The error------------------------------------------------<br>
+This will:
+- Read `Notebooks/Data/adult.csv`
+- Save `artifacts/train.csv` and `artifacts/test.csv`
+- Save `artifacts/preprocessor.pkl`
+- Save `artifacts/model.pkl`
+- Print accuracy and ROC-AUC scores
 
-This is my log file <br>
+### 5. Start the API server
 
-[ 2025-07-15 00:17:49,829 ] 29 src.logger - INFO - Entered the data ingestion method or component  <br>
-[ 2025-07-15 00:17:49,877 ] 32 src.logger - INFO - Read the dataset as dataframe<br>
-[ 2025-07-15 00:17:49,964 ] 38 src.logger - INFO - Train test split initiated<br>
-[ 2025-07-15 00:17:50,054 ] 45 src.logger - INFO - Ingestion of the data iss completed<br>
-[ 2025-07-15 00:17:50,101 ] 61 src.logger - INFO - Read train and test data completed<br>
-[ 2025-07-15 00:17:50,101 ] 62 src.logger - INFO - Train data shape: (26048, 15)<br>
-[ 2025-07-15 00:17:50,101 ] 63 src.logger - INFO - Test data shape: (6513, 15)<br>
-[ 2025-07-15 00:17:50,101 ] 65 src.logger - INFO - Converting '?' to NaN for proper missing value handling<br>
-[ 2025-07-15 00:17:50,165 ] 74 src.logger - INFO - Obtaining preprocessing object<br>
-[ 2025-07-15 00:17:50,166 ] 42 src.logger - INFO - Categorical columns: ['workclass', 'education', 'marital.status', 'occupation', 'relationship', 'race', 'sex', 'native.country']<br>
-[ 2025-07-15 00:17:50,166 ] 43 src.logger - INFO - Numerical columns: ['age', 'fnlwgt', 'education.num', 'capital.gain', 'capital.loss', 'hours.per.week']<br>
-[ 2025-07-15 00:17:50,169 ] 86 src.logger - INFO - Applying preprocessing object on training and testing dataframes<br>
-[ 2025-07-15 00:17:50,265 ] 90 src.logger - INFO - Transformed train features shape: (26048, 108)<br>
-[ 2025-07-15 00:17:50,265 ] 91 src.logger - INFO - Transformed test features shape: (6513, 108)<br>
-[ 2025-07-15 00:17:50,269 ] 133 src.logger - ERROR - Error occurred during data transformation: tuple index out of range<br>
-  
--------------------------------some context---------------------------------<br>
-After running my data_ingestion.py the above log file is getting created and then it is throwing eror.<br>
-my data_ingestion.py file is calling my data_transformation.py file <br>
+```bash
+uvicorn application:app --reload
+```
 
+The API will be available at **http://127.0.0.1:8000**
 
+---
 
+## 🔌 API Endpoints
 
-# COMAND USED TO RUN CODE = "python -m src.components.filename"  <br>
-  for example :python -m src.components.data_ingetsion <br>
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | Health check |
+| `POST` | `/predict` | Predict income class |
+| `GET` | `/docs` | Interactive Swagger UI |
+| `GET` | `/redoc` | API documentation |
+
+### Example `/predict` Request
+
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "age": 37,
+    "workclass": "Private",
+    "fnlwgt": 284582,
+    "education": "Bachelors",
+    "education_num": 13,
+    "marital_status": "Married-civ-spouse",
+    "occupation": "Exec-managerial",
+    "relationship": "Husband",
+    "race": "White",
+    "sex": "Male",
+    "capital_gain": 0,
+    "capital_loss": 0,
+    "hours_per_week": 40,
+    "native_country": "United-States"
+  }'
+```
+
+**Response:**
+```json
+{"prediction": ">50K"}
+```
+
+---
+
+## 📦 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Language | Python 3.11 |
+| ML | scikit-learn |
+| Data | pandas, numpy |
+| API | FastAPI + Uvicorn |
+| Serialization | joblib |
+| Logging | Python logging |
+
+---
+
+## 📝 Running Individual Components
+
+```bash
+python -m src.components.data_ingestion       # Ingest data only
+python -m src.components.model_trainer        # Train model only
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
