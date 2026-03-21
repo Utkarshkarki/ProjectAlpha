@@ -192,7 +192,7 @@ curl -X POST http://127.0.0.1:8000/predict \
 
 ---
 
-## 📝 Running Individual Components
+## 📝 Running Individual Component
 
 ```bash
 python -m src.components.data_ingestion       # Ingest data only
