@@ -1,4 +1,4 @@
-# 💰 ProjectAlpha — Income Prediction ML Pipeline
+# 💰  Income Prediction ML Pipeline
 
 An end-to-end machine learning pipeline that predicts whether an individual's annual income exceeds **$50K** based on U.S. Census demographic data. The project provides a fully modular ML pipeline with a FastAPI-powered REST API for real-time predictions.
 
